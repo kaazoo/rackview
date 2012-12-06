@@ -13,11 +13,22 @@ rack[1]["contents"].each do |element|
   element_type = element[1]["type"]
   element_ru = element[1]["ru"]
   element_name = element[1]["name"] rescue nil
+  element_hostname = element[1]["hostname"] rescue nil
+  element_user = element[1]["user"] rescue nil
 
   case element_type
     when "server"
       %>
-      <div class="server_<%= element_ru %>ru"><%= element_name %></div>
+      <div class="server_<%= element_ru %>ru">
+      <%= element_name %>
+      <% if element_hostname != nil
+        %>
+        <br>
+        CPU: <%= get_cpu_temperture(element_hostname, element_user) %> / Board: <%= get_board_temperture(element_hostname, element_user) %>
+        <%
+      end
+      %>
+      </div>
       <%
     when "free_ru"
       %>
