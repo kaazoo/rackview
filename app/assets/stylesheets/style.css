@@ -1,0 +1,145 @@
+.rack {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	float: left;
+	text-align: center;
+	width: 200px;
+	margin-left: 20px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	}
+
+.free_ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #FFE2B3;
+	height: 18px;
+	vertical-align: middle;
+	}
+
+.server_1ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #6D968D;
+	height: 18px;
+	vertical-align: middle;
+	}
+
+.server_2ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #6D968D;
+	height: 38px;
+	vertical-align: middle;
+	}
+
+.server_3ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #6D968D;
+	height: 58px;
+	vertical-align: middle;
+	}
+
+.server_4ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #6D968D;
+	height: 78px;
+	vertical-align: middle;
+	}
+
+.server_5ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #6D968D;
+	height: 98px;
+	vertical-align: middle;
+	}
+
+.switch_1ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #B6CCB8;
+	height: 18px;
+	vertical-align: middle;
+	}
+
+.switch_2ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #B6CCB8;
+	height: 38px;
+	vertical-align: middle;
+	}
+
+.switch_3ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #B6CCB8;
+	height: 58px;
+	vertical-align: middle;
+	}
+
+.storage_1ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #1F3642;
+	height: 18px;
+	vertical-align: middle;
+	color: white;
+	}
+
+.storage_2ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #1F3642;
+	height: 38px;
+	vertical-align: middle;
+	color: white;
+	}
+
+.storage_3ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #1F3642;
+	height: 58px;
+	vertical-align: middle;
+	color: white;
+	}
+
+.kvm_ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #B35D50;
+	height: 18px;
+	vertical-align: middle;
+	}
+
+.misc_device_ru {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #56493F;
+	height: 18px;
+	vertical-align: middle;
+	color: white;
+	}
+
+
+
+

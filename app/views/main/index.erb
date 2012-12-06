@@ -1,0 +1,48 @@
+
+
+<% @racks.each do |rack| %>
+
+<div class="rack">
+<%= puts rack %>
+<%= rack[1]["name"] %>
+
+<%
+rack[1]["contents"].each do |element|
+  puts element
+
+  element_type = element[1]["type"]
+  element_ru = element[1]["ru"]
+  element_name = element[1]["name"] rescue nil
+
+  case element_type
+    when "server"
+      %>
+      <div class="server_<%= element_ru %>ru"><%= element_name %></div>
+      <%
+    when "free_ru"
+      %>
+      <div class="free_ru" style="height:<%= element_ru * 20 - 2 %>px;"><%= element_ru %> HE</div>
+      <%
+    when "kvm"
+      %>
+      <div class="kvm_ru" style="height:<%= element_ru * 20 - 2 %>px;">kvm</div>
+      <%
+    when "switch"
+      %>
+      <div class="switch_<%= element_ru %>ru"><%= element_name %></div>
+      <%
+    when "storage"
+      %>
+      <div class="storage_<%= element_ru %>ru"><%= element_name %></div>
+      <%
+    when "misc_device"
+      %>
+      <div class="misc_device_ru" style="height:<%= element_ru * 20 - 2 %>px;"><%= element_name %></div>
+      <%
+  end
+end
+%>
+
+</div>
+
+<% end %>
