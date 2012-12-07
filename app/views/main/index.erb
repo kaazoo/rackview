@@ -15,7 +15,8 @@ rack[1]["contents"].each do |element|
   element_name = element[1]["name"] rescue nil
   element_hostname = element[1]["hostname"] rescue nil
   element_user = element[1]["user"] rescue nil
-  element_measure_type  = element[1]["measure_type"] rescue nil
+  element_cpu_measure_type  = element[1]["cpu_measure_type"] rescue nil
+  element_board_measure_type  = element[1]["board_measure_type"] rescue nil
 
   case element_type
     when "server"
@@ -24,7 +25,7 @@ rack[1]["contents"].each do |element|
       <%= element_name %>
       <% if element_hostname != nil
         %>
-        C: <%= get_cpu_temperture(element_measure_type, element_hostname, element_user) %> / B: <%= get_board_temperture(element_measure_type, element_hostname, element_user) %>
+        C: <%= get_cpu_temperture(element_cpu_measure_type, element_hostname, element_user) %> / B: <%= get_board_temperture(element_board_measure_type, element_hostname, element_user) %>
         <%
       end
       %>
