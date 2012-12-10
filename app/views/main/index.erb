@@ -17,6 +17,7 @@ rack[1]["contents"].each do |element|
   element_user = element[1]["user"] rescue nil
   element_cpu_measure_type  = element[1]["cpu_measure_type"] rescue nil
   element_board_measure_type  = element[1]["board_measure_type"] rescue nil
+  element_firmware_version  = element[1]["firmware_version"] rescue nil
 
   case element_type
     when "server"
@@ -41,11 +42,27 @@ rack[1]["contents"].each do |element|
       <%
     when "switch"
       %>
-      <div class="switch_<%= element_ru %>ru"><%= element_name %></div>
+      <div class="switch_<%= element_ru %>ru">
+      <%= element_name %>
+      <% if element_board_measure_type == "sanbox"
+        %>
+        B: <%= get_sanbox_temperture(element_hostname, element_user) %>
+        <%
+      end
+      %>
+      </div>
       <%
     when "storage"
       %>
-      <div class="storage_<%= element_ru %>ru"><%= element_name %></div>
+      <div class="storage_<%= element_ru %>ru">
+      <%= element_name %>
+      <% if element_board_measure_type == "easyraid"
+        %>
+        B: <%= get_easyraid_temperture(element_hostname, element_user, element_firmware_version) %>
+        <%
+      end
+      %>
+      </div>
       <%
     when "misc_device"
       %>
