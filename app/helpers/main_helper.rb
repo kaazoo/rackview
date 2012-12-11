@@ -193,4 +193,23 @@ def get_easyraid_temperture(hostname, user, firmware_version)
 end
 
 
+def get_color_for_temperature(temp, temp_min, temp_max)
+
+  puts temp
+  warn_temp = ((temp_max - temp_min) * 0.67) + temp_min
+  puts warn_temp
+  crit_temp = ((temp_max - temp_min) * 0.9) + temp_min
+  puts crit_temp
+
+  if (temp_min..warn_temp).include?(temp)
+    return "green"
+  elsif (warn_temp..crit_temp).include?(temp)
+    return "orange"
+  else
+    return "red"
+  end
+
+end
+
+
 end

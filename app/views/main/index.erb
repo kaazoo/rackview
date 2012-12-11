@@ -1,14 +1,14 @@
 
-
 <% @racks.each do |rack| %>
 
 <div class="rack">
-<%= puts rack %>
+
+<div class="rack_header">
 <%= rack[1]["name"] %>
+</div>
 
 <%
 rack[1]["contents"].each do |element|
-  puts element
 
   element_type = element[1]["type"]
   element_ru = element[1]["ru"]
@@ -18,18 +18,31 @@ rack[1]["contents"].each do |element|
   element_cpu_measure_type  = element[1]["cpu_measure_type"] rescue nil
   element_board_measure_type  = element[1]["board_measure_type"] rescue nil
   element_firmware_version  = element[1]["firmware_version"] rescue nil
+  element_temp_min  = element[1]["temp_min"] rescue nil
+  element_temp_max  = element[1]["temp_max"] rescue nil
 
   case element_type
     when "server"
-      %>
-      <div class="server_<%= element_ru %>ru">
-      <%= element_name %>
-      <% if element_hostname != nil
-        %>
-        C: <%= get_cpu_temperture(element_cpu_measure_type, element_hostname, element_user) %> / B: <%= get_board_temperture(element_board_measure_type, element_hostname, element_user) %>
-        <%
+      if element_hostname != nil
+        cpu_temp = get_cpu_temperture(element_cpu_measure_type, element_hostname, element_user)
+        board_temp = get_board_temperture(element_board_measure_type, element_hostname, element_user)
+        if (cpu_temp != nil) && (board_temp != nil)
+          temp = (cpu_temp + board_temp) / 2
+        elsif cpu_temp != nil
+          temp = cpu_temp
+        elsif board_temp != nil
+          temp = board_temp
+        end
+        color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
+      else
+        cpu_temp = nil
+        board_temp = nil
+        color = "grey"
       end
       %>
+      <div class="server_<%= element_ru %>ru" style="background-color:<%= color %>">
+      <a href="<%= @general[1]["nagios_base"] + element_name %>" target="_blank" class="linktext"><%= element_name %></a>
+      C: <%= cpu_temp %> / B: <%= board_temp %>
       </div>
       <%
     when "free_ru"
@@ -41,27 +54,31 @@ rack[1]["contents"].each do |element|
       <div class="kvm_ru" style="height:<%= element_ru * 20 - 2 %>px;">kvm</div>
       <%
     when "switch"
-      %>
-      <div class="switch_<%= element_ru %>ru">
-      <%= element_name %>
-      <% if element_board_measure_type == "sanbox"
-        %>
-        B: <%= get_sanbox_temperture(element_hostname, element_user) %>
-        <%
+      if element_board_measure_type == "sanbox"
+        temp = get_sanbox_temperture(element_hostname, element_user)
+        color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
+      else
+        temp = nil
+        color = "grey"
       end
       %>
+      <div class="switch_<%= element_ru %>ru" style="background-color:<%= color %>">
+      <a href="<%= @general[1]["nagios_base"] + element_name %>" target="_blank" class="linktext"><%= element_name %></a>
+      B: <%= temp %>
       </div>
       <%
     when "storage"
-      %>
-      <div class="storage_<%= element_ru %>ru">
-      <%= element_name %>
-      <% if element_board_measure_type == "easyraid"
-        %>
-        B: <%= get_easyraid_temperture(element_hostname, element_user, element_firmware_version) %>
-        <%
+      if element_board_measure_type == "easyraid"
+        temp = get_easyraid_temperture(element_hostname, element_user, element_firmware_version)
+        color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
+      else
+        temp = nil
+        color = "grey"
       end
       %>
+      <div class="storage_<%= element_ru %>ru" style="background-color:<%= color %>">
+      <a href="<%= @general[1]["nagios_base"] + element_name %>" target="_blank" class="linktext"><%= element_name %></a>
+      B: <%= temp %>
       </div>
       <%
     when "misc_device"
