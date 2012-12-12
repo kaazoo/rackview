@@ -142,16 +142,15 @@ def get_easyraid_temperture(hostname, user, firmware_version)
   require 'greenletters'
 
   log = ""
-  telnet = Greenletters::Process.new("telnet #{hostname}", :transcript => log)
+  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log)
 
   # Install a handler which may be triggered at any time
-  telnet.on(:output, /Please input user name:/i) do |process, match_data|
-    telnet << "#{user}\n"
-    telnet << File.read(File.expand_path("../../../config/easyraid_pw", __FILE__))
+  ssh.on(:output, /Please input passwd:/i) do |process, match_data|
+    ssh << File.read(File.expand_path("../../../config/easyraid_pw", __FILE__))
   end
 
-  puts "Starting Telnet ..."
-  telnet.start!
+  puts "Starting SSH ..."
+  ssh.start!
 
   case firmware_version
     when 1.43
@@ -170,16 +169,16 @@ def get_easyraid_temperture(hostname, user, firmware_version)
   end
 
   # wait for prompt
-  telnet.wait_for(:output, /#{prompt}>/i)
+  ssh.wait_for(:output, /#{prompt}>/i)
 
   # show temperature
-  telnet << "enclist #{enclosure} all\n"
-  telnet.wait_for(:output, /#{prompt}>/i)
+  ssh << "enclist #{enclosure} all\n"
+  ssh.wait_for(:output, /#{prompt}>/i)
 
   # quit session
-  telnet << "quit\n"
-  telnet.wait_for(:output, /Done/i)
-  puts "Telnet has exited."
+  ssh << "quit\n"
+#  ssh.wait_for(:output, /Done/i)
+  puts "SSH has exited."
 
   lines = log.split("\n")
 
@@ -188,6 +187,44 @@ def get_easyraid_temperture(hostname, user, firmware_version)
       puts line
 	  temp = line.split(" ")[1].split("/")
 	  return temp[0].to_f
+    end
+  end
+end
+
+
+def get_force10_temperture(hostname, user)
+  require 'greenletters'
+
+  log = ""
+  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log)
+
+  # Install a handler which may be triggered at any time
+  ssh.on(:output, /password:/i) do |process, match_data|
+    ssh << File.read(File.expand_path("../../../config/force10_pw", __FILE__))
+  end
+
+  puts "Starting SSH ..."
+  ssh.start!
+
+  # wait for prompt
+  ssh.wait_for(:output, /#{hostname}>/i)
+
+  # show temperature
+  ssh << "show system stack-unit 0 | grep Temp\n"
+  ssh.wait_for(:output, /#{hostname} #>/i)
+
+  # quit session
+  ssh << "quit\n"
+#  ssh.wait_for(:output, /Good bye./i)
+  puts "SSH has exited."
+
+  lines = log.split("\n")
+
+  lines.each do |line|
+    if line.include?("Temperature")
+      puts line
+	  temp = line.split(" ")
+	  return temp[2].to_f
     end
   end
 end

@@ -57,6 +57,9 @@ rack[1]["contents"].each do |element|
       if element_board_measure_type == "sanbox"
         temp = get_sanbox_temperture(element_hostname, element_user)
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
+      elsif element_board_measure_type == "force10"
+        temp = get_force10_temperture(element_hostname, element_user)
+        color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       else
         temp = nil
         color = "grey"
