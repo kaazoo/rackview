@@ -116,7 +116,11 @@ def get_sanbox_temperture(hostname, user)
   telnet.start!
 
   # wait for prompt
-  telnet.wait_for(:output, /#{hostname} #>/i)
+  begin
+    telnet.wait_for(:output, /#{hostname} #>/i)
+  rescue NotImplementedError
+    return nil
+  end
 
   # show temperature
   telnet << "show chassis\n"
@@ -169,7 +173,11 @@ def get_easyraid_temperture(hostname, user, firmware_version)
   end
 
   # wait for prompt
-  ssh.wait_for(:output, /#{prompt}>/i)
+  begin
+    ssh.wait_for(:output, /#{prompt}>/i)
+  rescue NotImplementedError
+    return nil
+  end
 
   # show temperature
   ssh << "enclist #{enclosure} all\n"
@@ -196,7 +204,7 @@ def get_force10_temperture(hostname, user)
   require 'greenletters'
 
   log = ""
-  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log, , :timeout => 5)
+  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log, :timeout => 5)
 
   # Install a handler which may be triggered at any time
   ssh.on(:output, /password:/i) do |process, match_data|
@@ -207,7 +215,11 @@ def get_force10_temperture(hostname, user)
   ssh.start!
 
   # wait for prompt
-  ssh.wait_for(:output, /#{hostname}>/i)
+  begin
+    ssh.wait_for(:output, /#{hostname}>/i)
+  rescue NotImplementedError
+    return nil
+  end
 
   # show temperature
   ssh << "show system stack-unit 0 | grep Temp\n"
