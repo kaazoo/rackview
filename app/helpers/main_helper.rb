@@ -105,7 +105,7 @@ def get_sanbox_temperture(hostname, user)
   require 'greenletters'
 
   log = ""
-  telnet = Greenletters::Process.new("telnet -l #{user} #{hostname}", :transcript => log)
+  telnet = Greenletters::Process.new("telnet -l #{user} #{hostname}", :transcript => log, :timeout => 5)
 
   # Install a handler which may be triggered at any time
   telnet.on(:output, /Password/i) do |process, match_data|
@@ -142,7 +142,7 @@ def get_easyraid_temperture(hostname, user, firmware_version)
   require 'greenletters'
 
   log = ""
-  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log)
+  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log, :timeout => 5)
 
   # Install a handler which may be triggered at any time
   ssh.on(:output, /Please input passwd:/i) do |process, match_data|
@@ -196,7 +196,7 @@ def get_force10_temperture(hostname, user)
   require 'greenletters'
 
   log = ""
-  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log)
+  ssh = Greenletters::Process.new("ssh #{user}@#{hostname}", :transcript => log, , :timeout => 5)
 
   # Install a handler which may be triggered at any time
   ssh.on(:output, /password:/i) do |process, match_data|
