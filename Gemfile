@@ -39,3 +39,5 @@ gem 'jquery-rails'
 gem 'libv8', '~> 3.11.8'
 gem 'therubyracer'
 gem 'greenletters'
+gem 'snmp'
+

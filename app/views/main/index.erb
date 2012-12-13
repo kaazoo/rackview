@@ -72,7 +72,13 @@ rack[1]["contents"].each do |element|
       <%
     when "storage"
       if element_board_measure_type == "easyraid"
-        temp = get_easyraid_temperture(element_hostname, element_user, element_firmware_version)
+        case element_firmware_version
+          when 1.43
+            bptemp1_oid = SNMP::ObjectId.new("1.3.6.1.4.1.27669.1.1.3.1.1.3.4")
+          when 1.09
+            bptemp1_oid = SNMP::ObjectId.new("1.3.6.1.4.1.27669.1.1.3.1.1.3.7")
+        end
+        temp = get_snmp_temperture(element_hostname, "public", bptemp1_oid)
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       else
         temp = nil

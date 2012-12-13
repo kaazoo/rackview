@@ -119,6 +119,7 @@ def get_sanbox_temperture(hostname, user)
   begin
     telnet.wait_for(:output, /#{hostname} #>/i)
   rescue NotImplementedError
+    telnet.kill!
     return nil
   end
 
@@ -128,7 +129,7 @@ def get_sanbox_temperture(hostname, user)
 
   # quit session
   telnet << "exit\n"
-  telnet.wait_for(:output, /Good bye./i)
+  telnet.wait_for(:exit)
   puts "Telnet has exited."
 
   lines = log.split("\n")
@@ -176,6 +177,7 @@ def get_easyraid_temperture(hostname, user, firmware_version)
   begin
     ssh.wait_for(:output, /#{prompt}>/i)
   rescue NotImplementedError
+    ssh.kill!
     return nil
   end
 
@@ -185,7 +187,7 @@ def get_easyraid_temperture(hostname, user, firmware_version)
 
   # quit session
   ssh << "quit\n"
-#  ssh.wait_for(:output, /Done/i)
+  ssh.wait_for(:exit)
   puts "SSH has exited."
 
   lines = log.split("\n")
@@ -218,16 +220,17 @@ def get_force10_temperture(hostname, user)
   begin
     ssh.wait_for(:output, /#{hostname}>/i)
   rescue NotImplementedError
+    ssh.kill!
     return nil
   end
 
   # show temperature
   ssh << "show system stack-unit 0 | grep Temp\n"
-  ssh.wait_for(:output, /#{hostname} #>/i)
+  ssh.wait_for(:output, /#{hostname}>/i)
 
   # quit session
   ssh << "quit\n"
-#  ssh.wait_for(:output, /Good bye./i)
+  ssh.wait_for(:exit)
   puts "SSH has exited."
 
   lines = log.split("\n")
@@ -239,6 +242,23 @@ def get_force10_temperture(hostname, user)
 	  return temp[2].to_f
     end
   end
+end
+
+
+def get_snmp_temperture(hostname, community, oid)
+  require 'snmp'
+
+  temp = nil
+
+  SNMP::Manager.open(:host => hostname, :community => community) do |manager|
+    response = manager.get([oid])
+    response.each_varbind do |vb|
+	  puts "#{vb.name.to_s}  #{vb.value.to_s}  #{vb.value.asn1_type}"
+	  temp = vb.value.to_f
+    end
+  end
+
+  return temp
 end
 
 
