@@ -250,12 +250,40 @@ def get_snmp_temperture(hostname, community, oid)
 
   temp = nil
 
-  SNMP::Manager.open(:host => hostname, :community => community) do |manager|
-    response = manager.get([oid])
-    response.each_varbind do |vb|
-	  puts "#{vb.name.to_s}  #{vb.value.to_s}  #{vb.value.asn1_type}"
-	  temp = vb.value.to_f
+  begin
+    SNMP::Manager.open(:host => hostname, :community => community) do |manager|
+      response = manager.get([oid])
+      response.each_varbind do |vb|
+	    puts "#{vb.name.to_s}  #{vb.value.to_s}  #{vb.value.asn1_type}"
+	    temp = vb.value.to_f
+	    puts "output of get_snmp_temperture(): " + temp.to_s
+      end
     end
+  rescue
+    return temp
+  end
+
+  return temp
+end
+
+
+def get_snmp_walk_temperture(hostname, community, oid, index)
+  require 'snmp'
+
+  temp = nil
+
+  begin
+    SNMP::Manager.open(:host => hostname, :community => community) do |manager|
+      response = []
+      manager.walk([oid]) do |vb|
+        response << vb[0].value
+        puts "#{vb[0].name.to_s}  #{vb[0].value.to_s}  #{vb[0].value.asn1_type}"
+      end
+      temp = response[index].to_f
+      puts "output of get_snmp_walk_temperture(): " + temp.to_s
+    end
+  rescue
+    return temp
   end
 
   return temp
