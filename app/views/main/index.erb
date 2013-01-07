@@ -20,6 +20,7 @@ rack[1]["contents"].each do |element|
   element_firmware_version  = element[1]["firmware_version"] rescue nil
   element_temp_min  = element[1]["temp_min"] rescue nil
   element_temp_max  = element[1]["temp_max"] rescue nil
+  element_stack_members  = element[1]["stack_members"] rescue nil
 
   case element_type
     when "server"
@@ -57,13 +58,20 @@ rack[1]["contents"].each do |element|
       <%
     when "switch"
       temp_oid_sanbox = SNMP::ObjectId.new("1.3.6.1.3.94.1.8.1.6")
-      temp_oid_force10 = SNMP::ObjectId.new("1.3.6.1.3.94.1.8.1.6")
+      temp_oid_force10_base = "1.3.6.1.4.1.6027.3.10.1.2.2.1.14"
 
       if element_board_measure_type == "sanbox"
         temp = get_snmp_walk_temperture(element_hostname, "public", temp_oid_sanbox, 2)
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       elsif element_board_measure_type == "force10"
-        temp = get_snmp_temperture(element_hostname, "public", temp_oid_force10)
+        temps = []
+        for member in 1..element_stack_members
+          member_oid = SNMP::ObjectId.new(temp_oid_force10_base + "." + member.to_s)
+          temp_member = get_snmp_temperture(element_hostname, "public", member_oid)
+          temps << temp_member
+          puts temp_member
+        end
+        temp = temps.inject{ |sum, el| sum + el }.to_f / temps.size
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       else
         temp = nil
