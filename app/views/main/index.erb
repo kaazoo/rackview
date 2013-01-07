@@ -59,6 +59,7 @@ rack[1]["contents"].each do |element|
     when "switch"
       temp_oid_sanbox = SNMP::ObjectId.new("1.3.6.1.3.94.1.8.1.6")
       temp_oid_force10_base = "1.3.6.1.4.1.6027.3.10.1.2.2.1.14"
+      temp_oid_cisco = SNMP::ObjectId.new("1.3.6.1.4.1.9.9.13.1.3.1.3.5")
 
       if element_board_measure_type == "sanbox"
         temp = get_snmp_walk_temperture(element_hostname, "public", temp_oid_sanbox, 2)
@@ -73,6 +74,9 @@ rack[1]["contents"].each do |element|
         end
         temp = temps.inject{ |sum, el| sum + el }.to_f / temps.size
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
+      elsif element_board_measure_type == "cisco"
+        temp = get_snmp_temperture(element_hostname, "public", temp_oid_cisco)
+        color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       else
         temp = nil
         color = "grey"
@@ -81,6 +85,24 @@ rack[1]["contents"].each do |element|
       puts temp
       %>
       <div class="switch_<%= element_ru %>ru" style="background-color:<%= color %>">
+      <a href="<%= @general[1]["nagios_base"] + element_name %>" target="_blank" class="linktext"><%= element_name %></a>
+      B: <%= temp %>
+      </div>
+      <%
+    when "telco"
+      temp_oid_cuc_ibm = SNMP::ObjectId.new("1.3.6.1.4.1.2.6.159.1.1.80.1.1.2.20.116.101.109.112.101.114.97.116.117.114.101.32.115.101.110.115.111.114.32.49")
+
+      if element_board_measure_type == "cuc_ibm"
+        temp = get_snmp_temperture(element_hostname, "public", temp_oid_cuc_ibm)
+        color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
+      else
+        temp = nil
+        color = "grey"
+      end
+      puts element_hostname
+      puts temp
+      %>
+      <div class="server_<%= element_ru %>ru" style="background-color:<%= color %>">
       <a href="<%= @general[1]["nagios_base"] + element_name %>" target="_blank" class="linktext"><%= element_name %></a>
       B: <%= temp %>
       </div>
