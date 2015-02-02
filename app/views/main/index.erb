@@ -1,6 +1,21 @@
 
 <% @racks.each do |rack| %>
 
+<div class="ru_table">
+<div class="rack_header">
+RU
+</div>
+<%
+rack[1]["ru"].to_i.downto(1) do |rackunit|
+  %>
+  <div class="ru_num"><%= rackunit %></div>
+  <%
+end
+%>
+</div>
+
+
+
 <div class="rack">
 
 <div class="rack_header">
@@ -50,7 +65,7 @@ rack[1]["contents"].each do |element|
       <%
     when "free_ru"
       %>
-      <div class="free_ru" style="height:<%= element_ru * 20 - 2 %>px;"><%= element_ru %> HE</div>
+      <div class="free_ru" style="height:<%= element_ru * 20 - 2 %>px;"><%= element_ru %> RU</div>
       <%
     when "kvm"
       %>
@@ -68,14 +83,14 @@ rack[1]["contents"].each do |element|
         temps = []
         for member in 1..element_stack_members
           member_oid = SNMP::ObjectId.new(temp_oid_force10_base + "." + member.to_s)
-          temp_member = get_snmp_temperture(element_hostname, "public", member_oid)
+          temp_member = get_snmp_temperture(element_hostname, "public", member_oid).to_f
           temps << temp_member
           puts temp_member
         end
         temp = temps.inject{ |sum, el| sum + el }.to_f / temps.size
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       elsif element_board_measure_type == "cisco"
-        temp = get_snmp_temperture(element_hostname, "public", temp_oid_cisco)
+        temp = get_snmp_temperture(element_hostname, "public", temp_oid_cisco).to_f
         color = get_color_for_temperature(temp, element_temp_min, element_temp_max)
       else
         temp = nil
@@ -129,6 +144,10 @@ rack[1]["contents"].each do |element|
       B: <%= temp %>
       </div>
       <%
+    when "cable_mgmt"
+      %>
+      <div class="cable_mgmt_ru" style="height:<%= element_ru * 20 - 2 %>px;"><%= element_name %></div>
+      <%
     when "misc_device"
       %>
       <div class="misc_device_ru" style="height:<%= element_ru * 20 - 2 %>px;"><%= element_name %></div>
@@ -139,4 +158,18 @@ end
 
 </div>
 
+<div class="ru_table" style="margin-right:25px;">
+<div class="rack_header">
+RU
+</div>
+<%
+rack[1]["ru"].to_i.downto(1) do |rackunit|
+  %>
+  <div class="ru_num"><%= rackunit %></div>
+  <%
+end
+%>
+</div>
+
 <% end %>
+
