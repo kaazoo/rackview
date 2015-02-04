@@ -2,6 +2,12 @@ class MainController < ApplicationController
 
 def index
 
+  if params['mode']
+    @mode = params['mode']
+  else
+    @mode = 'overview'
+  end
+
   rack_config = YAML.load(File.read(File.expand_path("../../../config/rack_config.yml", __FILE__)))
 
   @racks = []
